@@ -44,13 +44,14 @@ public class NumberConveyorMain {
                     (Class<? extends by.kovalski.numberconveyor.PipelineStage>) pipelineStageClass);
 
             long startTime = System.nanoTime();
-            Map<BinaryNumberPair, BinaryNumber> result = pipeline.process();
+            System.out.println("Начальное состояние:");
+            pipeline.printState();
+            pipeline.flushLog();
+            System.out.println("==========");
+            pipeline.process();
             long endTime = System.nanoTime();
 
             long executionTime = (endTime - startTime) / 1_000_000;
-
-            System.out.println("\nРезультаты обработки:");
-            result.forEach((key, value) -> System.out.println(key + " -> " + value));
 
             System.out.println("\n⏱ Время выполнения конвейера: " + executionTime + " мс");
 

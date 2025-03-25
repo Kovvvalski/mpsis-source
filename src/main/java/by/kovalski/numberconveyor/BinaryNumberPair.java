@@ -6,13 +6,13 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode
 @AllArgsConstructor
 public class BinaryNumberPair {
-    int pairIndex; // уникальный индекс пары
+    int pairIndex;
     BinaryNumber first;
     BinaryNumber second;
 
     @Override
     public String toString() {
-        return String.format("Pair #%d: [%s] && [%s]",
+        return String.format("Pair #%d: [%s] * [%s]",
                 pairIndex,
                 first.toString(),
                 second.toString()

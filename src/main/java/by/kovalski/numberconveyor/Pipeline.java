@@ -1,10 +1,7 @@
 package by.kovalski.numberconveyor;
 
 import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 public class Pipeline<T extends PipelineStage> {
 
@@ -12,20 +9,22 @@ public class Pipeline<T extends PipelineStage> {
     private int threadQuantity;
     private Queue<BinaryNumberPair> inputQueue;
     private Map<BinaryNumberPair, BinaryNumber> outputMap;
-    int bitQuantity;
-
+    private int bitQuantity;
+    private StringBuilder logBuffer; // Буфер логов
 
     public Pipeline(Queue<BinaryNumberPair> pairs, int bitQuantity, int threadQuantity, Class<T> stageType) {
         this.threadQuantity = threadQuantity;
         this.inputQueue = pairs;
         this.bitQuantity = bitQuantity;
-        outputMap = new HashMap<>();
+        this.outputMap = new HashMap<>();
+        this.logBuffer = new StringBuilder();
         initializeStages(stageType);
     }
 
     public Map<BinaryNumberPair, BinaryNumber> process() {
         ExecutorService executor = Executors.newFixedThreadPool(threadQuantity);
         int movementsQuantity = bitQuantity + inputQueue.size();
+
         try {
             for (int i = 0; i < movementsQuantity; i++) {
                 stages.get(stages.size() - 1).move(inputQueue, outputMap);
@@ -44,10 +43,14 @@ public class Pipeline<T extends PipelineStage> {
                         e.printStackTrace();
                     }
                 }
+                logBuffer.append("\n=== Такт ").append(i + 1).append(" ===\n");
+                printState();
             }
         } finally {
             executor.shutdown();
         }
+
+        flushLog(); // Выводим логи перед завершением
         return outputMap;
     }
 
@@ -68,4 +71,27 @@ public class Pipeline<T extends PipelineStage> {
         }
     }
 
+    public void printState() {
+        logBuffer.append("Входная очередь:\n");
+        inputQueue.forEach(pair -> logBuffer.append(pair).append("\n"));
+
+        logBuffer.append("\nСостояние конвейера:\n");
+        for (PipelineStage stage : stages) {
+            logBuffer.append("Шаг ").append(stage.stageIndex).append(" | ")
+                    .append("Операнды: ").append(stage.operands != null ? stage.operands : "Пусто").append(" | ")
+                    .append("Частичная сумма: ").append(stage.partialSum != null ? stage.partialSum : "Пусто").append(" |\n");
+        }
+
+        logBuffer.append("\nВыход конвейера:\n");
+        outputMap.entrySet()
+                .stream()
+                .sorted(Comparator.comparingInt(e -> e.getKey().pairIndex))
+                .forEach(e -> logBuffer.append(e.getKey().pairIndex).append(": ").
+                        append(e.getKey()).append(" -> ").append(e.getValue()).append("\n"));
+    }
+
+    public void flushLog() {
+        System.out.print(logBuffer.toString());
+        logBuffer.setLength(0);
+    }
 }

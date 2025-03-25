@@ -12,12 +12,13 @@ class StageResult {
 
     @Override
     public String toString() {
-        return "StageResult{" +
-                "stageIndex=" + stageIndex +
-                ", pair=" + pair +
-                ", partialProduct=" + partialProduct +
-                ", partialSum=" + partialSum +
-                ", offset=" + offset +
-                '}';
+        return String.format(
+                "➤ Шаг: %d | Пара: %s | Частичное произведение: %s | Частичная сумма: %s | Смещение: %d",
+                stageIndex,
+                pair != null ? pair : "Пусто",
+                partialProduct != null ? partialProduct : "Пусто",
+                partialSum != null ? partialSum : "Пусто",
+                offset
+        );
     }
 }
