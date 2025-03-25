@@ -10,6 +10,14 @@ import lombok.*;
 public class BinaryNumber {
     private boolean[] binary;
 
+    public BinaryNumber(int decimal, int bitLength) {
+        binary = new boolean[bitLength];
+        for (int i = bitLength - 1; i >= 0; i--) {
+            binary[i] = (decimal & 1) == 1;
+            decimal >>= 1;
+        }
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

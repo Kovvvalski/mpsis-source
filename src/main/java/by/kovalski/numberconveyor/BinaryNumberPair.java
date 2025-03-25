@@ -12,10 +12,10 @@ public class BinaryNumberPair {
 
     @Override
     public String toString() {
-        return String.format("Pair #%d: [%s (%d)] && [%s (%d)]",
+        return String.format("Pair #%d: [%s] && [%s]",
                 pairIndex,
-                first.toString(), first.toDecimal(),
-                second.toString(), second.toDecimal()
+                first.toString(),
+                second.toString()
         );
     }
 }
