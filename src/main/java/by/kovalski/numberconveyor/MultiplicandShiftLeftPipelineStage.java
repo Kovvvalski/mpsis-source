@@ -9,24 +9,26 @@ public class MultiplicandShiftLeftPipelineStage extends PipelineStage{
     @Override
     StageResult apply() {
         if (partialSum == null) {
-            boolean[] op1_16bit = new boolean[16];
-            boolean[] op2_16bit = new boolean[16];
-            System.arraycopy(operands.first.getBinary(), 0, op1_16bit, 8, 8);
-            System.arraycopy(operands.second.getBinary(), 0, op2_16bit, 8, 8);
-            operands.first.setBinary(op1_16bit);
-            operands.second.setBinary(op2_16bit);
             partialSum = new BinaryNumber(new boolean[16]);
+            operands.first16 = get16bitBinary(operands.first.getBinary());
+            operands.second16 = get16bitBinary(operands.second.getBinary());
         }
-        int bits = operands.first.getBinary().length;
-        boolean multiplierBit = operands.second.getBinary()[bits - 1 - offset];
-        boolean[] partialProductArray = new boolean[bits];
+        int bits = operands.first16.getBinary().length;
+        boolean multiplierBit = operands.second16.getBinary()[bits - 1 - offset];
+        boolean[] partialProductArray = new boolean[bits * 2];
         BinaryNumber partialProduct = new BinaryNumber(partialProductArray);
         if (multiplierBit) {
-            System.arraycopy(operands.first.getBinary(), 0, partialProductArray, 0, bits);
+            System.arraycopy(operands.first16.getBinary(), 0, partialProductArray, 0, bits);
         }
         partialSum.setBinary(calculatePartialSum(partialSum.getBinary(), partialProductArray));
-        operands.first.shift(-1);
+        operands.first16.shift(-1);
         return new StageResult(stageIndex, operands, partialProduct, partialSum, offset);
+    }
+
+    private BinaryNumber get16bitBinary(boolean[] arr_8bit) {
+        boolean[] arr_16bit = new boolean[16];
+        System.arraycopy(arr_8bit, 0, arr_16bit, 8 ,8);
+        return new BinaryNumber(arr_16bit);
     }
 
     private boolean[] calculatePartialSum(boolean[] binary1, boolean[] binary2) {
