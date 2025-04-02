@@ -1,5 +1,13 @@
 package by.kovalski.numberconveyor;
 
+/*
+  Лабораторная работа №1 по дисциплине Модели решения задач в интеллектуальных системах
+  Выполнена студентами гр. 221703 БГУИР Быльковым Даниилом Владимировичем, Аврукевичем Константином Сергеевичем
+  Файл описывает класс этапа конвейера со сдвигом множимого влево
+  Вариант 13, 14
+  26.03.25
+ */
+
 public class MultiplicandShiftLeftPipelineStage extends PipelineStage{
 
     MultiplicandShiftLeftPipelineStage(int stageIndex) {
@@ -25,10 +33,10 @@ public class MultiplicandShiftLeftPipelineStage extends PipelineStage{
         return new StageResult(stageIndex, operands, partialProduct, partialSum, offset);
     }
 
-    private BinaryNumber get16bitBinary(boolean[] arr_8bit) {
-        boolean[] arr_16bit = new boolean[16];
-        System.arraycopy(arr_8bit, 0, arr_16bit, 8 ,8);
-        return new BinaryNumber(arr_16bit);
+    private BinaryNumber get16bitBinary(boolean[] arr8) {
+        boolean[] arr16 = new boolean[16];
+        System.arraycopy(arr8, 0, arr16, 8 ,8);
+        return new BinaryNumber(arr16);
     }
 
     private boolean[] calculatePartialSum(boolean[] binary1, boolean[] binary2) {

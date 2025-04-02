@@ -1,5 +1,13 @@
 package by.kovalski.numberconveyor;
 
+/*
+  Лабораторная работа №1 по дисциплине Модели решения задач в интеллектуальных системах
+  Выполнена студентами гр. 221703 БГУИР Быльковым Даниилом Владимировичем, Аврукевичем Константином Сергеевичем
+  Файл описывает класс этапа конвейера со сдвигом частичной суммы вправо
+  Вариант 13, 14
+  26.03.25
+ */
+
 public class PartialSumShiftRightPipelineStage extends PipelineStage {
 
     public PartialSumShiftRightPipelineStage(int stageIndex) {
