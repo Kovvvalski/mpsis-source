@@ -1,6 +1,6 @@
 1
 8
-by.kovalski.numberconveyor.PartialSumShiftLeftPipelineStage
+by.kovalski.numberconveyor.PartialSumShiftRightPipelineStage
 12 25
 45 30
 4 0

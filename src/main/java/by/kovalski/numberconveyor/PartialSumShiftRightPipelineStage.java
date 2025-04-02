@@ -1,8 +1,8 @@
 package by.kovalski.numberconveyor;
 
-public class PartialSumShiftLeftPipelineStage extends PipelineStage {
+public class PartialSumShiftRightPipelineStage extends PipelineStage {
 
-    public PartialSumShiftLeftPipelineStage(int stageIndex) {
+    public PartialSumShiftRightPipelineStage(int stageIndex) {
         super(stageIndex);
     }
 
