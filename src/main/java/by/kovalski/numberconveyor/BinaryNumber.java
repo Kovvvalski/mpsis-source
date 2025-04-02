@@ -18,6 +18,19 @@ public class BinaryNumber {
         }
     }
 
+    public void shift(int offset) {
+        boolean[] result = new boolean[binary.length];
+        if (offset > 0) {
+            System.arraycopy(binary, 0, result, 1, binary.length - 1);
+            binary = result;
+            shift(offset - 1);
+        } else if (offset < 0) {
+            System.arraycopy(binary, 1, result, 0, binary.length - 1);
+            binary = result;
+            shift(offset + 1);
+        }
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
