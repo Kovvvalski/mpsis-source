@@ -17,7 +17,7 @@ import java.util.Queue;
 
 public class NumberConveyorMain {
     public static void main(String[] args) {
-        String inputFile = "src/main/resources/input.txt"; // Файл с входными данными
+        String inputFile = "src/main/resources/input2.txt"; // Файл с входными данными
         int threadQuantity;
         int bitQuantity;
         Class<?> pipelineStageClass;
