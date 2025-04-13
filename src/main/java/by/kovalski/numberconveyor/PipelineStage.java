@@ -17,7 +17,6 @@ public abstract class PipelineStage {
     PipelineStage prev;
     BinaryNumberPair operands;
     BinaryNumber partialSum;
-    int offset; // sequential number of partial production
 
     PipelineStage(int stageIndex) {
         this.stageIndex = stageIndex;
@@ -32,11 +31,9 @@ public abstract class PipelineStage {
             }
             operands = prev.operands;
             partialSum = prev.partialSum;
-            this.offset = ++prev.offset;
             prev.move(inputQueue, outputMap);
         } else { // if current node is the first
             this.operands = inputQueue.poll();
-            offset = 0;
             partialSum = null;
         }
     }

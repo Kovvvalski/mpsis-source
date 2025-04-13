@@ -34,6 +34,7 @@ public class Pipeline<T extends PipelineStage> {
         int movementsQuantity = bitQuantity + inputQueue.size();
 
         try {
+            pushState();
             for (int i = 0; i < movementsQuantity; i++) {
                 stages.get(stages.size() - 1).move(inputQueue, outputMap);
                 List<Future<StageResult>> futures = new ArrayList<>();
@@ -52,13 +53,11 @@ public class Pipeline<T extends PipelineStage> {
                     }
                 }
                 logBuffer.append("\n=== Такт ").append(i + 1).append(" ===\n");
-                printState();
+                pushState();
             }
         } finally {
             executor.shutdown();
         }
-
-        flushLog(); // Выводим логи перед завершением
         return outputMap;
     }
 
@@ -79,7 +78,7 @@ public class Pipeline<T extends PipelineStage> {
         }
     }
 
-    public void printState() {
+    public void pushState() {
         logBuffer.append("Входная очередь:\n");
         inputQueue.forEach(pair -> logBuffer.append(pair).append("\n"));
 

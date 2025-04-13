@@ -12,12 +12,11 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.Queue;
 
 public class NumberConveyorMain {
     public static void main(String[] args) {
-        String inputFile = "src/main/resources/input2.txt"; // Файл с входными данными
+        String inputFile = "src/main/resources/input.txt"; // Файл с входными данными
         int threadQuantity;
         int bitQuantity;
         Class<?> pipelineStageClass;
@@ -43,7 +42,7 @@ public class NumberConveyorMain {
                 if (parts.length == 2) {
                     int num1 = Integer.parseInt(parts[0]);
                     int num2 = Integer.parseInt(parts[1]);
-                    inputQueue.add(new BinaryNumberPair(id++, new BinaryNumber(num1, bitQuantity), new BinaryNumber(num2, bitQuantity)));
+                    inputQueue.add(new BinaryNumberPair(id++, new BinaryNumber(num1, bitQuantity), new BinaryNumber(num2, bitQuantity), 0));
                 }
             }
 
@@ -52,11 +51,8 @@ public class NumberConveyorMain {
                     (Class<? extends by.kovalski.numberconveyor.PipelineStage>) pipelineStageClass);
 
             long startTime = System.nanoTime();
-            System.out.println("Начальное состояние:");
-            pipeline.printState();
-            pipeline.flushLog();
-            System.out.println("==========");
             pipeline.process();
+            pipeline.flushLog();
             long endTime = System.nanoTime();
 
             long executionTime = (endTime - startTime) / 1_000_000;

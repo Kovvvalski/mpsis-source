@@ -18,7 +18,7 @@ public class MultiplicandShiftLeftPipelineStage extends PipelineStage{
             partialSum = new BinaryNumber(new boolean[16]);
         }
         int bits = operands.first.getBinary().length;
-        boolean multiplierBit = operands.second.getBinary()[bits - 1 - offset];
+        boolean multiplierBit = operands.second.getBinary()[bits - 1 - operands.offset];
         boolean[] partialProductArray = new boolean[bits];
         BinaryNumber partialProduct = new BinaryNumber(partialProductArray);
         if (multiplierBit) {
@@ -26,7 +26,7 @@ public class MultiplicandShiftLeftPipelineStage extends PipelineStage{
         }
         partialSum.setBinary(calculatePartialSum(partialSum.getBinary(), partialProductArray));
         operands.first.shift(-1);
-        return new StageResult(stageIndex, operands, partialProduct, partialSum, offset);
+        return new StageResult(stageIndex, operands, partialProduct, partialSum, operands.offset++);
     }
 
     private boolean[] calculatePartialSum(boolean[] binary1, boolean[] binary2) {
