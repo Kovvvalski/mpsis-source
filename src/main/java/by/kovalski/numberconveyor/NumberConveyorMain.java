@@ -16,13 +16,13 @@ import java.util.Queue;
 
 public class NumberConveyorMain {
     public static void main(String[] args) {
-        String inputFile = "src/main/resources/input2.txt"; // Файл с входными данными
-        int threadQuantity;
+        String inputFile = "src/main/resources/input.txt"; // Файл с входными данными
+        int stageQuantity;
         int bitQuantity;
         Class<?> pipelineStageClass;
 
         try (BufferedReader br = new BufferedReader(new FileReader(inputFile))) {
-            threadQuantity = Integer.parseInt(br.readLine().trim());
+            stageQuantity = Integer.parseInt(br.readLine().trim());
             bitQuantity = Integer.parseInt(br.readLine().trim());
             String stageClassName = br.readLine().trim();
 
@@ -48,7 +48,7 @@ public class NumberConveyorMain {
             }
 
             @SuppressWarnings("unchecked")
-            Pipeline<?> pipeline = new Pipeline<>(inputQueue, bitQuantity, threadQuantity,
+            Pipeline<?> pipeline = new Pipeline<>(inputQueue, bitQuantity, stageQuantity,
                     (Class<? extends by.kovalski.numberconveyor.PipelineStage>) pipelineStageClass);
 
             long startTime = System.nanoTime();

@@ -14,57 +14,42 @@ import java.util.concurrent.*;
 public class Pipeline<T extends PipelineStage> {
 
     private List<T> stages;
-    private int threadQuantity;
     private Queue<BinaryNumberPair> inputQueue;
     private Map<BinaryNumberPair, BinaryNumber> outputMap;
     private int bitQuantity;
+    private int stageQuantity;
     private StringBuilder logBuffer; // Буфер логов
 
-    public Pipeline(Queue<BinaryNumberPair> pairs, int bitQuantity, int threadQuantity, Class<T> stageType) {
-        this.threadQuantity = threadQuantity;
+    public Pipeline(Queue<BinaryNumberPair> pairs, int bitQuantity, int stageQuantity, Class<T> stageType) {
         this.inputQueue = pairs;
         this.bitQuantity = bitQuantity;
         this.outputMap = new HashMap<>();
         this.logBuffer = new StringBuilder();
+        this.stageQuantity = stageQuantity;
         initializeStages(stageType);
     }
 
     public Map<BinaryNumberPair, BinaryNumber> process() {
-        ExecutorService executor = Executors.newFixedThreadPool(threadQuantity);
-        int movementsQuantity = bitQuantity + inputQueue.size();
-
-        try {
             pushState();
-            for (int i = 0; i < movementsQuantity; i++) {
+            int pairsQuantity = inputQueue.size();
+            for (int i = 0; outputMap.size() != pairsQuantity; i++) {
                 stages.get(stages.size() - 1).move(inputQueue, outputMap);
-                List<Future<StageResult>> futures = new ArrayList<>();
 
                 for (PipelineStage stage : stages) {
                     if (stage.operands != null) {
-                        futures.add(executor.submit(stage::apply));
-                    }
-                }
-
-                for (Future<StageResult> future : futures) {
-                    try {
-                        future.get();
-                    } catch (InterruptedException | ExecutionException e) {
-                        e.printStackTrace();
+                        StageResult result = stage.apply();
                     }
                 }
                 logBuffer.append("\n=== Такт ").append(i + 1).append(" ===\n");
                 pushState();
             }
-        } finally {
-            executor.shutdown();
-        }
         return outputMap;
     }
 
     private void initializeStages(Class<T> stageClass) {
         stages = new ArrayList<>();
         try {
-            for (int i = 0; i < bitQuantity; i++) {
+            for (int i = 0; i < stageQuantity; i++) {
                 T stage = stageClass.getDeclaredConstructor(int.class).newInstance(i + 1);
                 stage.bitQuantity = bitQuantity;
                 stages.add(stage);
