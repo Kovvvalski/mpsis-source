@@ -1,6 +1,6 @@
 package by.kovalski.numberconveyor;
 
-public class MultiplicandShiftLeftPipelineStage extends PipelineStage{
+public class MultiplicandShiftLeftPipelineStage extends PipelineStage {
 
     MultiplicandShiftLeftPipelineStage(int stageIndex) {
         super(stageIndex);
@@ -16,16 +16,19 @@ public class MultiplicandShiftLeftPipelineStage extends PipelineStage{
             operands.first.setBinary(op1_16bit);
             operands.second.setBinary(op2_16bit);
         }
-        int bits = operands.first.getBinary().length;
-        boolean multiplierBit = operands.second.getBinary()[bits - 1 - operands.offset];
-        boolean[] partialProductArray = new boolean[bits];
-        BinaryNumber partialProduct = new BinaryNumber(partialProductArray);
-        if (multiplierBit) {
-            System.arraycopy(operands.first.getBinary(), 0, partialProductArray, 0, bits);
+        if (operands.offset < bitQuantity) {
+            int bits = operands.first.getBinary().length;
+            boolean multiplierBit = operands.second.getBinary()[bits - 1 - operands.offset];
+            boolean[] partialProductArray = new boolean[bits];
+            BinaryNumber partialProduct = new BinaryNumber(partialProductArray);
+            if (multiplierBit) {
+                System.arraycopy(operands.first.getBinary(), 0, partialProductArray, 0, bits);
+            }
+            operands.partialSum.setBinary(calculatePartialSum(operands.partialSum.getBinary(), partialProductArray));
+            operands.first.shift(-1);
+            return new StageResult(stageIndex, operands, partialProduct, operands.offset++);
         }
-        operands.partialSum.setBinary(calculatePartialSum(operands.partialSum.getBinary(), partialProductArray));
-        operands.first.shift(-1);
-        return new StageResult(stageIndex, operands, partialProduct, operands.offset++);
+        return new StageResult(stageIndex, operands, null, operands.offset++);
     }
 
     private boolean[] calculatePartialSum(boolean[] binary1, boolean[] binary2) {

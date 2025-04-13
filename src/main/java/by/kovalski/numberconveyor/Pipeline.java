@@ -9,7 +9,6 @@ package by.kovalski.numberconveyor;
  */
 
 import java.util.*;
-import java.util.concurrent.*;
 
 public class Pipeline<T extends PipelineStage> {
 
@@ -18,31 +17,35 @@ public class Pipeline<T extends PipelineStage> {
     private Map<BinaryNumberPair, BinaryNumber> outputMap;
     private int bitQuantity;
     private int stageQuantity;
-    private StringBuilder logBuffer; // Буфер логов
 
     public Pipeline(Queue<BinaryNumberPair> pairs, int bitQuantity, int stageQuantity, Class<T> stageType) {
         this.inputQueue = pairs;
         this.bitQuantity = bitQuantity;
         this.outputMap = new HashMap<>();
-        this.logBuffer = new StringBuilder();
         this.stageQuantity = stageQuantity;
         initializeStages(stageType);
     }
 
     public Map<BinaryNumberPair, BinaryNumber> process() {
-            pushState();
-            int pairsQuantity = inputQueue.size();
-            for (int i = 0; outputMap.size() != pairsQuantity; i++) {
-                stages.get(stages.size() - 1).move(inputQueue, outputMap);
+        pushState(0, null); // нет результатов на старте
 
-                for (PipelineStage stage : stages) {
-                    if (stage.operands != null) {
-                        StageResult result = stage.apply();
-                    }
+        int pairsQuantity = inputQueue.size();
+        for (int i = 0; outputMap.size() != pairsQuantity; i++) {
+            stages.get(stages.size() - 1).move(inputQueue, outputMap);
+
+            List<StageResult> results = new ArrayList<>();
+            for (PipelineStage stage : stages) {
+                if (stage.operands != null) {
+                    StageResult result = stage.apply();
+                    results.add(result);
+                } else {
+                    results.add(null);
                 }
-                logBuffer.append("\n=== Такт ").append(i + 1).append(" ===\n");
-                pushState();
             }
+
+            pushState(i + 1, results);
+        }
+
         return outputMap;
     }
 
@@ -64,27 +67,30 @@ public class Pipeline<T extends PipelineStage> {
         }
     }
 
-    public void pushState() {
-        logBuffer.append("Входная очередь:\n");
-        inputQueue.forEach(pair -> logBuffer.append(pair).append("\n"));
 
-        logBuffer.append("\nСостояние конвейера:\n");
-        for (PipelineStage stage : stages) {
-            logBuffer.append("Шаг ").append(stage.stageIndex).append(" | ")
-                    .append("Операнды: ").append(stage.operands != null ? stage.operands : "Пусто").append('\n');
-                    //.append("Частичная сумма: ").append(stage.partialSum != null ? stage.partialSum : "Пусто").append(" |\n");
+    public void pushState(int cycleNumber, List<StageResult> stageResults) {
+        System.out.println("\n=== Такт " + cycleNumber + " ===");
+
+        System.out.println("Входная очередь:");
+        inputQueue.forEach(pair -> System.out.println(pair));
+
+        System.out.println("\nСостояние конвейера:");
+        for (int i = 0; i < stages.size(); i++) {
+            PipelineStage stage = stages.get(i);
+            StageResult result = stageResults != null ? stageResults.get(i) : null;
+
+            String pairStr = result != null && result.pair != null ? result.pair.toString() : "Пусто";
+            String productStr = result != null && result.partialProduct != null ? result.partialProduct.toString() : "Пусто";
+
+            System.out.printf("Стадия %d - %s - %s%n", stage.stageIndex, pairStr, productStr);
         }
 
-        logBuffer.append("\nВыход конвейера:\n");
-        outputMap.entrySet()
-                .stream()
+        System.out.println("\nВыход конвейера:");
+        outputMap.entrySet().stream()
                 .sorted(Comparator.comparingInt(e -> e.getKey().pairIndex))
-                .forEach(e -> logBuffer.append(e.getKey().pairIndex).append(": ").
-                        append(e.getKey()).append(" -> ").append(e.getValue()).append("\n"));
+                .forEach(e -> System.out.println(
+                        e.getKey().pairIndex + ": " + e.getKey() + " -> " + e.getValue()
+                ));
     }
 
-    public void flushLog() {
-        System.out.print(logBuffer.toString());
-        logBuffer.setLength(0);
-    }
 }

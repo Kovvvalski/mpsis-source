@@ -25,7 +25,13 @@ public abstract class PipelineStage {
     abstract StageResult apply();
 
     void move(Queue<BinaryNumberPair> inputQueue, Map<BinaryNumberPair, BinaryNumber> outputMap) {
-        if (prev != null) { // if current node is not first
+        if (prev == null && next == null) { // if it is single node pipeline
+            if (operands != null) {
+                if (operands.offset == bitQuantity) outputMap.put(operands, operands.partialSum);
+                else inputQueue.add(operands);
+            }
+            operands = inputQueue.poll();
+        } else if (prev != null) { // if current node is not first
             if (operands != null && next == null) { // if node is not empty and node is last
                 if (operands.offset == bitQuantity) {
                     outputMap.put(operands, operands.partialSum);
