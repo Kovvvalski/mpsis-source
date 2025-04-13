@@ -17,6 +17,7 @@ public class BinaryNumberPair {
     int pairIndex;
     BinaryNumber first;
     BinaryNumber second;
+    BinaryNumber partialSum;
     int offset;
 
     @Override

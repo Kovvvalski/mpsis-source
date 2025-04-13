@@ -66,6 +66,7 @@ public class Pipeline<T extends PipelineStage> {
         try {
             for (int i = 0; i < bitQuantity; i++) {
                 T stage = stageClass.getDeclaredConstructor(int.class).newInstance(i + 1);
+                stage.bitQuantity = bitQuantity;
                 stages.add(stage);
                 if (i != 0) {
                     T previousStage = stages.get(i - 1);
@@ -85,8 +86,8 @@ public class Pipeline<T extends PipelineStage> {
         logBuffer.append("\nСостояние конвейера:\n");
         for (PipelineStage stage : stages) {
             logBuffer.append("Шаг ").append(stage.stageIndex).append(" | ")
-                    .append("Операнды: ").append(stage.operands != null ? stage.operands : "Пусто").append(" | ")
-                    .append("Частичная сумма: ").append(stage.partialSum != null ? stage.partialSum : "Пусто").append(" |\n");
+                    .append("Операнды: ").append(stage.operands != null ? stage.operands : "Пусто").append('\n');
+                    //.append("Частичная сумма: ").append(stage.partialSum != null ? stage.partialSum : "Пусто").append(" |\n");
         }
 
         logBuffer.append("\nВыход конвейера:\n");
