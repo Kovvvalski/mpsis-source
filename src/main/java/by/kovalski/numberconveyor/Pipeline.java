@@ -27,7 +27,7 @@ public class Pipeline<T extends PipelineStage> {
     }
 
     public Map<BinaryNumberPair, BinaryNumber> process() {
-        pushState(0, null); // нет результатов на старте
+        printState(0, null); // нет результатов на старте
 
         int pairsQuantity = inputQueue.size();
         for (int i = 0; outputMap.size() != pairsQuantity; i++) {
@@ -43,7 +43,7 @@ public class Pipeline<T extends PipelineStage> {
                 }
             }
 
-            pushState(i + 1, results);
+            printState(i + 1, results);
         }
 
         return outputMap;
@@ -68,7 +68,7 @@ public class Pipeline<T extends PipelineStage> {
     }
 
 
-    public void pushState(int cycleNumber, List<StageResult> stageResults) {
+    public void printState(int cycleNumber, List<StageResult> stageResults) {
         System.out.println("\n=== Такт " + cycleNumber + " ===");
 
         System.out.println("Входная очередь:");
@@ -91,6 +91,8 @@ public class Pipeline<T extends PipelineStage> {
                 .forEach(e -> System.out.println(
                         e.getKey().pairIndex + ": " + e.getKey() + " -> " + e.getValue()
                 ));
-    }
 
+        System.out.println("\nНажмите Enter, чтобы продолжить...");
+        new Scanner(System.in).nextLine();
+    }
 }
