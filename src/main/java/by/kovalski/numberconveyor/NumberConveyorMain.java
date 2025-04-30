@@ -16,7 +16,7 @@ import java.util.Queue;
 
 public class NumberConveyorMain {
     public static void main(String[] args) {
-        String inputFile = "src/main/resources/input2.txt"; // Файл с входными данными
+        String inputFile = "src/main/resources/input.txt"; // Файл с входными данными
         int stageQuantity;
         int bitQuantity;
         Class<?> pipelineStageClass;
@@ -51,13 +51,7 @@ public class NumberConveyorMain {
             Pipeline<?> pipeline = new Pipeline<>(inputQueue, bitQuantity, stageQuantity,
                     (Class<? extends by.kovalski.numberconveyor.PipelineStage>) pipelineStageClass);
 
-            long startTime = System.nanoTime();
             pipeline.process();
-            long endTime = System.nanoTime();
-
-            long executionTime = (endTime - startTime) / 1_000_000;
-
-            System.out.println("\n⏱ Время выполнения конвейера: " + executionTime + " мс");
 
         } catch (IOException | NumberFormatException e) {
             System.err.println("Ошибка чтения файла: " + e.getMessage());

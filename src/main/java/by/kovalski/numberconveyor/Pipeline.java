@@ -82,7 +82,7 @@ public class Pipeline<T extends PipelineStage> {
             String pairStr = result != null && result.pair != null ? result.pair.toString() : "Пусто";
             String productStr = result != null && result.partialProduct != null ? result.partialProduct.toString() : "Пусто";
 
-            System.out.printf("Стадия %d - %s - %s%n", stage.stageIndex, pairStr, productStr);
+            System.out.printf("Стадия %d - %s - Ч.П. %s%n", stage.stageIndex, pairStr, productStr);
         }
 
         System.out.println("\nВыход конвейера:");
