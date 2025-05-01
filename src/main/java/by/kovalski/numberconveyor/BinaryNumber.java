@@ -46,7 +46,7 @@ public class BinaryNumber {
         for (boolean bit : binary) {
             sb.append(bit ? '1' : '0');
         }
-        return sb.append("==(").append(toDecimal()).append(')').toString();
+        return sb.toString();
     }
 
     public int toDecimal() {

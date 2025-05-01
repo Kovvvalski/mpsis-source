@@ -1,27 +1,25 @@
 package by.kovalski.numberconveyor;
 
-/*
-  Лабораторная работа №1 по дисциплине Модели решения задач в интеллектуальных системах
-  Выполнена студентами гр. 221703 БГУИР Быльковым Даниилом Владимировичем, Аврукевичем Константином Сергеевичем
-  Файл является исполнительным файлом программы
-  Вариант 13, 14
-  26.03.25
- */
-
 import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
 
 public class NumberConveyorMain {
     public static void main(String[] args) {
-        String inputFile = "src/main/resources/input.txt"; // Файл с входными данными
+        if (args.length == 0) {
+            System.err.println("Укажите путь к входному файлу в качестве аргумента.");
+            return;
+        }
+
+        String inputFile = args[0]; // Путь к файлу передаётся как аргумент
         int stageQuantity;
         int bitQuantity;
         Class<?> pipelineStageClass;
 
-        try (BufferedReader br = new BufferedReader(new FileReader(inputFile))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile)))) {
             stageQuantity = Integer.parseInt(br.readLine().trim());
             bitQuantity = Integer.parseInt(br.readLine().trim());
             String stageClassName = br.readLine().trim();
@@ -38,18 +36,30 @@ public class NumberConveyorMain {
             int id = 1;
 
             while ((line = br.readLine()) != null) {
-                String[] parts = line.split(" ");
+                String[] parts = line.trim().split(" ");
                 if (parts.length == 2) {
                     int num1 = Integer.parseInt(parts[0]);
                     int num2 = Integer.parseInt(parts[1]);
-                    inputQueue.add(new BinaryNumberPair(id++, new BinaryNumber(num1, bitQuantity),
-                            new BinaryNumber(num2, bitQuantity), new BinaryNumber(new boolean[bitQuantity * 2]), 0));
+
+                    BinaryNumberPair pair = new BinaryNumberPair(
+                            id++,
+                            new BinaryNumber(num1, bitQuantity),
+                            new BinaryNumber(num2, bitQuantity),
+                            new BinaryNumber(new boolean[bitQuantity * 2]),
+                            0
+                    );
+
+                    inputQueue.add(pair);
                 }
             }
 
             @SuppressWarnings("unchecked")
-            Pipeline<?> pipeline = new Pipeline<>(inputQueue, bitQuantity, stageQuantity,
-                    (Class<? extends by.kovalski.numberconveyor.PipelineStage>) pipelineStageClass);
+            Pipeline<?> pipeline = new Pipeline<>(
+                    inputQueue,
+                    bitQuantity,
+                    stageQuantity,
+                    (Class<? extends PipelineStage>) pipelineStageClass
+            );
 
             pipeline.process();
 

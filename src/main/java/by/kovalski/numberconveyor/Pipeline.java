@@ -27,10 +27,10 @@ public class Pipeline<T extends PipelineStage> {
     }
 
     public Map<BinaryNumberPair, BinaryNumber> process() {
-        printState(0, null); // нет результатов на старте
+        printState(0, null);
 
         int pairsQuantity = inputQueue.size();
-        for (int i = 0; outputMap.size() != pairsQuantity; i++) {
+        for (int i = 0; true; i++) {
             stages.get(stages.size() - 1).move(inputQueue, outputMap);
 
             List<StageResult> results = new ArrayList<>();
@@ -43,6 +43,10 @@ public class Pipeline<T extends PipelineStage> {
                 }
             }
 
+            if (outputMap.size() == pairsQuantity) {
+                printOutputMap(i);
+                break;
+            }
             printState(i + 1, results);
         }
 
@@ -69,6 +73,7 @@ public class Pipeline<T extends PipelineStage> {
 
 
     public void printState(int cycleNumber, List<StageResult> stageResults) {
+        clearConsole();
         System.out.println("\n=== Такт " + cycleNumber + " ===");
 
         System.out.println("Входная очередь:");
@@ -80,9 +85,10 @@ public class Pipeline<T extends PipelineStage> {
             StageResult result = stageResults != null ? stageResults.get(i) : null;
 
             String pairStr = result != null && result.pair != null ? result.pair.toString() : "Пусто";
+            String sumStr = result != null && result.pair != null ? result.pair.partialSum.toString() : "Пусто";
             String productStr = result != null && result.partialProduct != null ? result.partialProduct.toString() : "Пусто";
 
-            System.out.printf("Стадия %d - %s - Ч.П. %s%n", stage.stageIndex, pairStr, productStr);
+            System.out.printf("Стадия %d || %s || Ч.П. %s || Ч.С. %s %n", stage.stageIndex, pairStr, productStr, sumStr);
         }
 
         System.out.println("\nВыход конвейера:");
@@ -94,5 +100,21 @@ public class Pipeline<T extends PipelineStage> {
 
         System.out.println("\nНажмите Enter, чтобы продолжить...");
         new Scanner(System.in).nextLine();
+    }
+
+    private void printOutputMap(int stages) {
+        clearConsole();
+        System.out.println("Результат работы конвейера:");
+        System.out.printf("Количество тактов: %d%n", stages);
+        outputMap.entrySet().stream()
+                .sorted(Comparator.comparingInt(o -> o.getKey().pairIndex))
+                .forEach(o -> System.out.printf("%s = %s = %d%n", o.getKey().toString(),
+                        o.getValue().toString(), o.getValue().toDecimal()));
+
+    }
+
+    private void clearConsole() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
     }
 }

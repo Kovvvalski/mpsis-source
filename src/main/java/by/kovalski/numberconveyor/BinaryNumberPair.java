@@ -22,11 +22,10 @@ public class BinaryNumberPair {
 
     @Override
     public String toString() {
-        return String.format("Пара #%d: [%s] * [%s], Частичная сумма: %s",
+        return String.format("Пара #%d: [%s] * [%s]",
                 pairIndex,
                 first.toString(),
-                second.toString(),
-                partialSum != null ? partialSum.toString() : "Пусто"
+                second.toString()
         );
     }
 }
