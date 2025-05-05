@@ -1,5 +1,4 @@
-8
+4
 8
 by.kovalski.numberconveyor.PartialSumShiftRightPipelineStage
-1 2
-1 2
+122 123

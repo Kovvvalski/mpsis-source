@@ -42,6 +42,7 @@ public class Pipeline<T extends PipelineStage> {
                     results.add(stage.operands != null ? stage.apply() : null);
                 }
                 printState(++stepCounter, results);
+                results.clear();
             }
         }
         return outputMap;
