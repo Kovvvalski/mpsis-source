@@ -28,30 +28,22 @@ public class Pipeline<T extends PipelineStage> {
 
     public Map<BinaryNumberPair, BinaryNumber> process() {
         printState(0, null);
-
+        int stepCounter = 0;
         int pairsQuantity = inputQueue.size();
         for (int i = 0; true; i++) {
             stages.get(stages.size() - 1).move(inputQueue, outputMap);
-
-            List<StageResult> results = new ArrayList<>();
-            for (PipelineStage stage : stages) {
-                if (stage.operands != null) {
-                    for(int j = 0; j < bitQuantity/stageQuantity; j++) {
-                        results.add(stage.apply());
-                        printState((i + 1) * (j + 1), results);
-
-                    }
-                } else {
-                    results.add(null);
-                }
-            }
-
             if (outputMap.size() == pairsQuantity) {
-                printOutputMap(i);
+                printOutputMap(stepCounter);
                 break;
             }
+            List<StageResult> results = new ArrayList<>();
+            for (int j = 0; j < bitQuantity / stageQuantity; j++) {
+                for (PipelineStage stage : stages) {
+                    results.add(stage.operands != null ? stage.apply() : null);
+                }
+                printState(++stepCounter, results);
+            }
         }
-
         return outputMap;
     }
 
@@ -94,11 +86,11 @@ public class Pipeline<T extends PipelineStage> {
 //                System.out.printf("Стадия %d || %s || Ч.П. %s || Ч.С. %s %n", stage.stageIndex, pairStr, productStr, sumStr);
 //            }
 //        } else {
-            for (PipelineStage stage : stages) {
-                String pairStr = stage.operands != null ? stage.operands.toString() : "Пусто";
-                String sumStr = stage.operands != null ? stage.operands.partialSum.toString() : "Пусто";
-                System.out.printf("Этап %d || %s || Ч.С. %s %n", stage.stageIndex, pairStr, sumStr);
-            }
+        for (PipelineStage stage : stages) {
+            String pairStr = stage.operands != null ? stage.operands.toString() : "Пусто";
+            String sumStr = stage.operands != null ? stage.operands.partialSum.toString() : "Пусто";
+            System.out.printf("Этап %d || %s || Ч.С. %s %n", stage.stageIndex, pairStr, sumStr);
+        }
 //        }
 
         System.out.println("\nВыход конвейера:");
