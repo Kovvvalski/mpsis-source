@@ -1,4 +1,4 @@
-4
+8
 8
 by.kovalski.numberconveyor.MultiplicandShiftLeftPipelineStage
 78 139

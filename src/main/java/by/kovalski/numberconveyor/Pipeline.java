@@ -74,24 +74,17 @@ public class Pipeline<T extends PipelineStage> {
         inputQueue.forEach(pair -> System.out.println(pair));
 
         System.out.println("\nСостояние конвейера:");
-//        if (stageQuantity == bitQuantity) {
-//            for (int i = 0; i < stages.size(); i++) {
-//                PipelineStage stage = stages.get(i);
-//                StageResult result = stageResults != null ? stageResults.get(i) : null;
-//
-//                String pairStr = result != null && result.pair != null ? result.pair.toString() : "Пусто";
-//                String sumStr = result != null && result.pair != null ? result.pair.partialSum.toString() : "Пусто";
-//                String productStr = result != null && result.partialProduct != null ? result.partialProduct.toString() : "Пусто";
-//
-//                System.out.printf("Стадия %d || %s || Ч.П. %s || Ч.С. %s %n", stage.stageIndex, pairStr, productStr, sumStr);
-//            }
-//        } else {
-        for (PipelineStage stage : stages) {
-            String pairStr = stage.operands != null ? stage.operands.toString() : "Пусто";
-            String sumStr = stage.operands != null ? stage.operands.partialSum.toString() : "Пусто";
-            System.out.printf("Этап %d || %s || Ч.С. %s %n", stage.stageIndex, pairStr, sumStr);
+        for (int i = 0; i < stages.size(); i++) {
+            PipelineStage stage = stages.get(i);
+            StageResult result = stageResults != null ? stageResults.get(i) : null;
+
+            String pairStr = result != null && result.pair != null ? result.pair.toString() : "Пусто";
+            String sumStr = result != null && result.pair != null ? result.pair.partialSum.toString() : "Пусто";
+            String productStr = result != null && result.partialProduct != null ? result.partialProduct.toString() : "Пусто";
+
+            System.out.printf("Стадия %d || %s || Ч.П. %s || Ч.С. %s %n", stage.stageIndex, pairStr, productStr, sumStr);
+
         }
-//        }
 
         System.out.println("\nВыход конвейера:");
         outputMap.entrySet().stream()
